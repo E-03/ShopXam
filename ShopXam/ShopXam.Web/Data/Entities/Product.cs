@@ -10,6 +10,8 @@ namespace ShopXam.Web.Data.Entities
     {
         public int Id { get; set; }
 
+        [MaxLength(50, ErrorMessage = "El campo {0} solo debe tener {1} Caracteres o menos")]
+        [Required]
         public string Nombre { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C2}",ApplyFormatInEditMode = false)]
@@ -19,7 +21,10 @@ namespace ShopXam.Web.Data.Entities
         public string ImageUrl { get; set; }
 
         [Display(Name = "Ultima Compra")]
-        public DateTime UltimaCompra { get; set; }
+        public DateTime? UltimaCompra { get; set; }
+
+        [Display(Name = "Ultima Venta")]
+        public DateTime? UltimaVenta { get; set; }
 
         [Display(Name = "Disponible?")]
         public bool Disponible { get; set; }

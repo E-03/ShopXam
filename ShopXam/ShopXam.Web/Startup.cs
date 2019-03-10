@@ -30,6 +30,12 @@ namespace ShopXam.Web
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            //Siclo de vida mas corto AddTransient.
+            services.AddTransient<SeddDb>();
+            //Siclo de vida mas largo AddScope se mantiene durante toda la ejecucion.
+            services.AddScoped<IRepository,Repository>();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
