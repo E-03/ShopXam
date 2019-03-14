@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ShopXam.Web.Data;
+using ShopXam.Web.Data.Entities;
 
 namespace ShopXam.Web
 {
@@ -26,8 +27,7 @@ namespace ShopXam.Web
             var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
             using (var scope = scopeFactory.CreateScope())
             {
-                var seeder = scope.ServiceProvider.GetService<SeddDb>();
-                seeder.SeedAsync().Wait();
+                scope.ServiceProvider.GetService<SeddDb>().SeedAsync().Wait();
             }
         }
 
@@ -36,6 +36,24 @@ namespace ShopXam.Web
                 .UseStartup<Startup>();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //namespace ShopXam.Web
 //{

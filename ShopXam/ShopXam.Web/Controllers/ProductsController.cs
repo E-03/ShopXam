@@ -1,28 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ShopXam.Web.Data;
-using ShopXam.Web.Data.Entities;
-
-namespace ShopXam.Web.Controllers
+﻿namespace ShopXam.Web.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.EntityFrameworkCore;
+    using Data;
+    using Data.Entities;
+    using Data.Helper;
+
     public class ProductsController : Controller
     {
-        private readonly IRepository repository;
+        private readonly IProductRepository _Productrepository;
+        private readonly IUserHelper userHelper;
 
-        public ProductsController(IRepository repository)
+        public ProductsController(IProductRepository Productrepository,IUserHelper userHelper)
         {
-            this.repository = repository;
+            this._Productrepository = Productrepository;
+            this.userHelper = userHelper;
         }
 
         // GET: Products
         public IActionResult Index()
         {
-            return View(this.repository.GetProducts());
+            return View(this._Productrepository.GetAll());
         }
 
         // GET: Products/Details/5
@@ -33,7 +36,7 @@ namespace ShopXam.Web.Controllers
                 return NotFound();
             }
 
-            var product = this.repository.GetProduct(id.Value);
+            var product = this._Productrepository.GetByIdAsync(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -55,8 +58,10 @@ namespace ShopXam.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                this.repository.AddProduct(product);
-                await this.repository.SaveAllAsync();
+                //TODO: Cambiando el logged user
+                product.user = await this.userHelper.GetUserByEmailAsync("efabal@mardom.com");
+                await this._Productrepository.CreateAsync(product);
+                await this._Productrepository.SaveAllAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -70,7 +75,7 @@ namespace ShopXam.Web.Controllers
                 return NotFound();
             }
 
-            var product = this.repository.GetProduct(id.Value);
+            var product = this._Productrepository.GetByIdAsync(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -88,12 +93,13 @@ namespace ShopXam.Web.Controllers
             {
                 try
                 {
-                    this.repository.UpdateProduct(product);
-                    await this.repository.SaveAllAsync();
+                    product.user = await this.userHelper.GetUserByEmailAsync("efabal@mardom.com");
+                    await this._Productrepository.UpdateAsync(product);
+                    await this._Productrepository.SaveAllAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!this.repository.ProductExist(product.Id))
+                    if (!await this._Productrepository.ExistAsync(product.Id))
                     {
                         return NotFound();
                     }
@@ -115,7 +121,7 @@ namespace ShopXam.Web.Controllers
                 return NotFound();
             }
 
-            var product = this.repository.GetProduct(id.Value);
+            var product = this._Productrepository.GetByIdAsync(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -129,9 +135,9 @@ namespace ShopXam.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = this.repository.GetProduct(id);
-            this.repository.RemoveProduct(product);
-            await this.repository.SaveAllAsync();
+            var prod = await this._Productrepository.GetByIdAsync(id);
+            await this._Productrepository.DeleteAsync(prod);
+            await this._Productrepository.SaveAllAsync();
             return RedirectToAction(nameof(Index));
         }
     }
