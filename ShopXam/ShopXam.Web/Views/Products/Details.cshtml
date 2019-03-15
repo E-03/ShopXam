@@ -1,0 +1,63 @@
+﻿@model ShopXam.Web.Data.Entities.Product
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Detalle Productos</h2>
+
+<div>
+    <h4>Productos</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Precio)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Precio)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </dt>
+        <dd>
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+            <img src="@Url.Content(Model.ImageUrl)" alt="Image" style="width:300px; height:450px;max-width:100%;height:auto">
+            }
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UltimaCompra)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UltimaCompra)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UltimaVenta)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UltimaVenta)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Disponible)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Disponible)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Stock)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Stock)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a> |
+    <a asp-action="Index" class="btn btn-success">Back to List</a>
+</div>
